@@ -46,6 +46,25 @@ async function getComments(){
 }
 
 
+let todoCache={
+  lastUpdated:0,
+  data:[]
+}
+
+async function getTodos(){
+  const now = Date.now()
+  if(now - todoCache.lastUpdated > CACHE_TTL || !todoCache.data.length){
+    const response=await fetch(`${baseUrl}/todos`)
+    const json = await response.json()
+    todoCache={
+      lastUpdated: now,
+      data: json
+    }
+  }
+  return todoCache.data
+}
+
+
 app.get('/', (c) => {
   return c.text('Hey dude!')
 })
@@ -91,10 +110,24 @@ app.get('/comments',async(c)=>{
     total: allComments.length,
     data: paginated
   })
-  
-
-
-
-
 })
+
+app.get('/todos',async(c)=>{
+  const page = parseInt(c.req.query('page')) || 1;
+  const limit = parseInt(c.req.query('limit')) || 100;
+  const allTodos = await getTodos() 
+
+  const start = (page-1)*limit;
+  const end = start+limit;
+  const paginated = allTodos.slice(start,end);
+  
+  return c.json({
+    page,
+    limit,
+    total: allTodos.length,
+    data: paginated
+  })
+})
+
+
 export default app

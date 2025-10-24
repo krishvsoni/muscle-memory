@@ -1,0 +1,33 @@
+to avoid auto fill 
+
+const cache: Record<string, {lastUpdated:number;data:any[]}> = {
+
+}
+
+
+function paginated<T>(data: T[],page:number,limit:number){
+    const start= (page-1)*limit;
+    const end = start+limit;
+    const paginated=data.slice(start,end)
+
+
+return {
+    page,
+    limit,
+    total: data.length,
+    data: paginated,
+  };
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

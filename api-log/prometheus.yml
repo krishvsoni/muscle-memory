@@ -1,0 +1,4 @@
+scrape_configs:
+  - job_name: 'bun_hono_project'
+    static_configs:
+      - targets: ['bun_hono_project:3000']

@@ -1,0 +1,19 @@
+Imagine you’re showing 10 posts per page.
+
+Scenario:
+
+100 posts exist.
+
+You fetch page 2 (posts 11–20).
+
+Someone inserts a new post at the top (ID 0).
+
+Offset pagination:
+
+If you use OFFSET 10, it now fetches posts 12–21 instead!
+➡️ You skip one extra because the data shifted.
+
+Cursor pagination:
+
+If you use WHERE id > 10, you still get posts 11–20.
+➡️ The data didn’t shift — consistent results.

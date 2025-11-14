@@ -17,3 +17,43 @@ Cursor pagination:
 
 If you use WHERE id > 10, you still get posts 11–20.
 ➡️ The data didn’t shift — consistent results.
+
+
+
+app.get('/offset/posts',async(req,res) =>{
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = parseInt(req.query.offset) || 0;
+    const response = await axios.get($`{BASE_URL}/photos`)
+    const data = response.data,
+    const paginated = data.slice(offset,offset+limit);
+
+    res.json({
+        limit,
+        offset,
+        previous: offset-limit >=0 ? offset-limit : null;
+        next: offset+limit <data.length ? offset+limit :null;
+        paginated
+    })
+
+})
+
+
+app.get('/cursor/posts',async(req,res) => {
+    try{
+        const limit = parseInt(req.query.limit) || 10;
+        const cursor = parseInt(req.query.cursor) || 0;
+        const response = await axios.get(`${BASE_URL}/photos`);
+        const data = response.data;
+        const filteredData= data.filter(item => item.id>cursor);
+        const paginated= filteredData.slice(0,limit)
+
+        const nextCursor = paginated.length>0 ? paginated[paginated.length-1].id : null
+
+    } catch{
+
+    res.status(500).json({message: err.message});
+
+    }
+})
+
+

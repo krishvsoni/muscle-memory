@@ -19,6 +19,16 @@ response* =
   },
 */
 
+app.get('/', (req, res) => {
+    res.json({message:'hello dude'});
+});
+
+app.get('/posts', async (req, res) => {
+    const response = await axios.get(`${BASE_URL}/photos`);
+    res.json(response.data);
+});
+
+
 
 // offset based pagination  
 app.get('/offset/posts',async(req,res) => {
